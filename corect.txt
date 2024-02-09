@@ -1,0 +1,92 @@
+int @x;
+int @x1;
+int @x2;
+int @y;
+int @arr[21];
+float @f => 20.0;
+float @f1 => @f;
+bool @myBool => True;
+char @myChar => 'c';
+string @myString => "salut";
+
+int @testFunction(int @x, float @z) {
+    @x => 2;
+    return @x;
+}
+
+int @testFunction(int @x, int @z) {
+    @x => 3;
+    return 3;
+}
+
+int @test(int @param1, int @param2, float @f) {
+    @f => 30.0;
+    return @y;
+}
+
+struct @myStruct {
+    int @myStructInt;
+    bool @myStructBool;
+    char @myStructChar;
+};
+
+class @myClass {
+    privat: int @myClassInt;
+    public: bool @myClassBoolFunction(int @testClassFuncParam) {
+        @x2 => 5;
+        return True;
+    }
+};
+
+class @myClass2 {
+    privat: int @myClassBool;
+};
+
+begin
+@arr[3] => 2;
+@f => 30.0;
+@f1 => @f;
+@myBool => False;
+@myChar => 's';
+@myString => "hello";
+@myStruct -> @myStructInt => 2;
+
+for(int @i => 1; @i <= @x; @i++) {
+    @x1 => 15;
+    if(@x2 >= 10) then {
+        @x1 => 10;
+    } else {
+        @x1 => 20;
+    }
+}
+
+do {
+    @x1 => @x1 + 1;
+} while (@x == 2 && @x1 <= @x2);
+
+while (2 == 3 || @x1 != @x2) do {
+    @x1 => @x1 - @x2;
+}
+
+while (@y != @x) do @x => @y;
+
+@x => 10; @x1 => 20; @x2 => 30; @y => 100;
+if(@x1 + @test(@x1, @x2, @f) < 5 + @x1 && ((@x > 2 || @x1 < 4 + @x2) || @x == 2)) then {
+    @x => 2;
+    @x => 75;
+    @f => 3.2;
+}
+@x1 => @x * 100 + 5 * 100 + @arr[2];
+Eval(@x1);
+Eval(2);
+Eval(2.00);
+Eval('s');
+Eval("buna");
+Eval(True);
+Eval(@x * 10 - 100);
+Eval(@x1);
+Eval(@x2 * 10 - 200);
+Eval(@x + @test(@x1,@x,@f));     
+TypeOf(@x + 23);
+TypeOf(@f - 30.0);
+end
