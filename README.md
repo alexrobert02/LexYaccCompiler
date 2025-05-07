@@ -1,4 +1,4 @@
-# LFAC-Project
+# LexYaccCompiler
 
 This project implements a custom-designed programming language using YACC, focused on strong typing, user-defined data structures, and semantic correctness. The language is designed to include modern features such as type declarations, array support, control flow and functions, and abstract syntax tree (AST) evaluation for arithmetic expressions.
 
