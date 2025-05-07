@@ -1,13 +1,15 @@
 %{
-// yacc -d tema.y && lex tema.l && gcc lex.yy.c y.tab.c -o tema && ./tema test.txt
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
-#include "tema.h"
+#include "compiler.h"
 
 extern FILE* yyin;
 extern char* yytext;
 extern int yylineno;
+
+int yylex(void);
+int yyerror(char *s);
 %}
 
 %union {

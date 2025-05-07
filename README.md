@@ -1,76 +1,109 @@
 # LFAC-Project
 
-Design an original programming language using YACC.
-1. Your language should include:
-    * type declarations (int, float char, string, bool)
-    * array types
-    * user defined data types (similar to classes in object orientated languages, but with your own syntax):
-        * provide specific syntax to allow initialization and use of variables of user defined types
-        * provide specific syntax for accessing fields and methods
-    * variable declarations/definition, constant definitions, function definitions
-    * control statements (if, for, while, etc.), assignment statements
+This project implements a custom-designed programming language using YACC, focused on strong typing, user-defined data structures, and semantic correctness. The language is designed to include modern features such as type declarations, array support, control flow and functions, and abstract syntax tree (AST) evaluation for arithmetic expressions.
 
-    assignment statements should be of the form: *left_value = expression* (where left_value can be an identifier, an element of an array, or anything else specific to your language)
-    * arithmetic and boolean expressions
-    * function calls which can have as parameters: expressions, other function calls, identifiers, constants, etc.
-    * Your language should include a predefined function *Eval(arg)* (arg can be an arithmetic expression, variable or number) and a predefined function *TypeOf(arg)*
-    * Your program should be structured in 4 sections: a section for global variables, a section or functions, a section for user defined data types and a special function representing the entry point of the program
+## Features
+### Language Components
+* **Primitve Types**: `int`, `float`, `char`, `string`, `bool`
+* **Arrays**: Type-safe array declarations and usage
+* **User-Defined Data Types**:
+   * Similar to object-oriented classes
+   * Custom syntax for defining fields and methods
+   * Support for initialization and member access
+* **Variables & Constants**: Declarations and definitions for variables and constats
+* **Functions**: Definitions with parameter and return types
+* **Control Flow**: Support for `if`, `for`, `while`, etc.
+* **Assignments**:
+   * Syntax: `left_value => expression`
+   * ``left_value`` can be an identifier, array element, etc.
+* **Expressions**: Arithmetic and boolean expressions
+* **Function calls**: Arguments can be expressions, function calls, constants, identifiers, etc.
 
+### Built-in Functions
+* `Eval(arg)` - Evaluates arithmetic expressions and prints the result
+* `TypeOf(arg)` - Returns the type of an expression; checks for type mismatches
 
-2. Create a symbol table for every input source program n your language, which should include:
-    * information regarding variable or constant identifiers (type, value)
-    * information regarding function identifiers (the returned type, the type and name of each formal parameter)
-   
-    The symbol table should be printable in two files: symbol_table.txt and symbol_table_functions.txt (for functions)
+## Program Structure
+Programs in this language follow a structured layout with four sections:
+1. **Global Variables**
+2. **User Defined Types**
+3. **Functions**
+4. **Entry Point Function** - A special function that acts as `main`
 
+## Symbol Table
+Two symbol tables are generated per source program:
+* `symbol_table.txt`:
+   * Variables and constants with their types and values
+* `symbol_table_functions.txt`:
+   * Functions with return types and parameter details
 
-3. Provide semantic analysis and check that:
-    * any variable that appears in a program has been previously defined and any function that is called has been defined
-    * a variable should not be declared more than once
-    * all the operands on the right side of an expression must have the same type (the language should not support casting)
-    * the left side of an assignment has the same type as the right side (the left side can be an element of an array, an identifier etc.)
-    * the parameters of a function call have the types from the function definition
+## Semantic Analysis
+The language includes comprehensive semantic validation:
+* All variables/functions must be declared before use
+* Duplicate declarations are disallowed
+* Operands in expressions must have the same type (no implicit casting)
+* Assignment sides must have matching types
+* Function arguments must match declared parameter types
+* Semantic errors prevent execution, and detailed error messages are provided
 
-    Detailed error messages should be provided if these conditions do not hold (e.g.which variable is not defined, or it is defined twice and the program line)\
-    **A program in your language should not execute if there exist semantic or syntactic errors!**
+## Abstract Syntax Tree (AST)
+Arithmetic expressions are parsed into ASTs for evaluation.
 
+### AST Structure
+* **Nodes**: Operators (e.g., +, -, *, /)
+* **Leafs**: Operands (e.g., numbers, variables, array elements, function calls)
 
-4. Implement Evan and TypeOf:
-   * Implement TypeOf
-   
-   Remark: TypeOf(x + f(y)) should cause a semantic error if TypeOf(x) != TypeOf(f(y)) (see 3(c) above)
-   * In order to implement Eval, build abstract syntax trees (AST) for the arithmetic expressions in a program
-   
+### AST Construction
+```
+buildAST(root, left_tree, right_tree, type);
+```
+* `root`: Operand or operator
+* `left_tree` / `right_tree`: Subtrees
+* `type`: Enum indicating the node type (NUMBER, IDENTIFIER, OPERATOR, etc.)
 
-If type of expr is int, for every call of the form *Eval(expr)*, the AST for the expression will be evaluated and the actual value of *expr* will be printed.\
-Also, for every assignment instruction *left_value = expr* (left value is an identifier or element of an array with int type), the AST will be evaluated and its value will be assigned to the left_value.
+### AST Evaluation
+```
+int evalAST(ast);
+```
+* Leaf (number): returns the number
+* Leaf (identifier): returns the variable’s value
+* Operator node: recursively evaluates left and right subtrees, then combines values
 
-AST: abstract syntax tree - built during parsing of expression:
-* inner nodes: operators
-* leafs: operands of expressions (numbers, identifiers, vector elements, function calls etc.)
+## Error Handling
+Semantic and syntactic errors are explicitly reported with line numbers and descriptions. Programs with any errors will not execute.
 
-- write a data structure representing an AST
-- write a function which builds an AST:
+Example messages:
+* ```32:  Error: Variable `@x1` already exists```
+* ```14:  Error: Cannot define 2 functions with the same name and parameter types```
 
-   buildAST(root, left_tree, right_tree type)
-   * root: a number, an identifier, an operator, a vector element, other operands
-   * type: an integer/element of enum representing the root type
-   * if expr is expr1 op expr2 (op is an operator):
-      * expr.AST = buildAST(op, expr1.AST, expr2.AST, OP) //OP denotes the root type
-   * if expr is an identifier X:
-      * expr.AST = buildAST(X, null, null, IDENTIFIER)
-   * if expr is a number n:
-      * expr.AST = buildAST(n, null, null, NUMBER)
-   * if expr is other operand
-      * expr.AST = buildAST("operand", null, null, OTHER)
-        
-   (expr.AST denoted the AST corresponding to expression *expr*)
+## Installation
 
-- write a function evalAST(*ast*) which evaluates an AST and returns an int:
-   * if *ast* is a leaf labeled with:
-      * a number: return the number 
-      * an id: return the value of the identifier
-      * anything else: return 0
-   * else (*ast* is a tree with the root labeled with an operator):
-      * evalAST for the left and right tree
-      * combine the results according to the operation
+### Prerequisites
+* Lex
+* Yacc
+* Gcc Compiler
+
+### Steps
+1. Compile the parser:
+   ```
+   yacc -d compiler.y
+   ``` 
+2. Compile the lexer:
+   ```
+   lex compiler.l
+   ```
+3. Compile the generated C files:
+   ```
+   gcc lex.yy.c y.tab.c -o compiler
+   ```
+
+## Usage Examples
+### ✅ Run the compiler on a syntactically correct file:
+```
+./compiler wrong.txt
+```
+
+### ❌ Run the compiler on a file with syntax errors:
+```
+./compiler correct.txt
+```
